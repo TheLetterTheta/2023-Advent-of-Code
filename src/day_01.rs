@@ -16,7 +16,7 @@ pub fn solve_part1(input: &Input) -> u32 {
     input.iter()
         .map(|l| {
              let first = l.chars().find(char::is_ascii_digit).expect("digit to be in string").to_digit(10).unwrap();
-            let last = l.chars().rev().find(char::is_ascii_digit).expect("digit to be in string").to_digit(10).unwrap();
+            let last = l.chars().rfind(char::is_ascii_digit).expect("digit to be in string").to_digit(10).unwrap();
 
             (10*first) + last
         })
@@ -38,7 +38,7 @@ pub fn solve_part2(input: &Input) -> u32 {
             let l = l.replace("nine", "ni9ne");
 
             let first = l.chars().find(char::is_ascii_digit).expect("digit to be in string").to_digit(10).unwrap();
-            let last = l.chars().rev().find(char::is_ascii_digit).expect("digit to be in string").to_digit(10).unwrap();
+            let last = l.chars().rfind(char::is_ascii_digit).expect("digit to be in string").to_digit(10).unwrap();
 
             (10*first) + last
         })
