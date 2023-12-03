@@ -1,15 +1,14 @@
 use aoc_runner_derive::{aoc, aoc_generator};
-use itertools::Itertools;
+
 use nom::{
     branch::alt,
-    bytes::complete::{tag, take},
-    character::complete::{self, line_ending, one_of},
-    combinator::opt,
+    bytes::complete::{tag},
+    character::complete::{self, line_ending},
     multi::separated_list1,
     sequence::{preceded, tuple},
     IResult, Parser,
 };
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 
 type Input = HashMap<u32, Vec<Vec<(u32, String)>>>;
 
@@ -60,7 +59,7 @@ pub fn solve_part1(input: &Input) -> u32 {
         .iter()
         .filter_map(|(k, v)| {
             if v.iter().all(|pull| {
-                pull.into_iter()
+                pull.iter()
                     .all(|(number, color)| match color.as_str() {
                         "green" => number <= &13,
                         "red" => number <= &12,
