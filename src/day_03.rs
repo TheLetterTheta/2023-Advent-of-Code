@@ -1,15 +1,14 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
-use itertools::Itertools;
+
 use nom::{
     branch::alt,
     bytes::complete::tag,
-    character::complete::{self, alpha1, line_ending, none_of, not_line_ending, one_of},
-    multi::{many0, many1, separated_list1},
-    sequence::{preceded, tuple},
+    character::complete::{line_ending, none_of, one_of},
+    multi::{many0, separated_list1},
     IResult, Parser,
 };
-use std::collections::HashMap;
+
 
 #[derive(Debug, Copy, Clone)]
 pub enum Chars {
@@ -77,9 +76,7 @@ pub fn solve_part1(input: &Input) -> u32 {
                                 .max()
                                 .expect("Right boundary");
 
-                            if left_boundary > 0 {
-                                left_boundary -= 1;
-                            }
+                            left_boundary = left_boundary.saturating_sub(1);
                             if right_boundary < input[level].len() - 1 {
                                 right_boundary += 1;
                             }
@@ -319,16 +316,14 @@ pub fn solve_part2(input: &Input) -> u32 {
                                     .fold(0, |acc, n| acc * 10 + n);
                             }
 
-                            if vec![
-                                found_up,
+                            if [found_up,
                                 found_down,
                                 found_left,
                                 found_right,
                                 found_upleft,
                                 found_upright,
                                 found_downleft,
-                                found_downright,
-                            ]
+                                found_downright]
                             .iter()
                             .filter(|i| **i)
                             .count()
