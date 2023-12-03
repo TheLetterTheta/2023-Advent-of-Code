@@ -42,7 +42,7 @@ pub fn day2_generator(input: &str) -> Input {
 ...*......
 ..35..633.
 ......#...
-617*......
+617*1.....
 .....+.58.
 ..592.....
 ......755.
@@ -301,7 +301,7 @@ pub fn solve_part2(input: &Input) -> u32 {
                                     .fold(0, |acc, n| acc * 10 + n);
                             }
 
-                            if column > input[level].len() - 1
+                            if column < input[level].len() - 1
                                 && matches!(input[level][column + 1], Chars::Number(_))
                             {
                                 found_right = true;
