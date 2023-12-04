@@ -2,17 +2,19 @@ use aoc_runner_derive::{aoc, aoc_generator};
 
 use nom::{
     branch::alt,
-    bytes::complete::{tag},
+    bytes::complete::tag,
     character::complete::{self, line_ending},
     multi::separated_list1,
     sequence::{preceded, tuple},
     IResult, Parser,
 };
-use std::collections::{HashMap};
+use std::collections::HashMap;
 
-type Input = HashMap<u32, Vec<Vec<(u32, String)>>>;
+type MapTo = Vec<Vec<(u32, String)>>;
+type Line = (u32, MapTo);
+type Input = HashMap<u32, MapTo>;
 
-fn parse_line(input: &str) -> IResult<&str, (u32, Vec<Vec<(u32, String)>>)> {
+fn parse_line(input: &str) -> IResult<&str, Line> {
     tuple((
         preceded(tag("Game "), complete::u32),
         preceded(
@@ -59,13 +61,12 @@ pub fn solve_part1(input: &Input) -> u32 {
         .iter()
         .filter_map(|(k, v)| {
             if v.iter().all(|pull| {
-                pull.iter()
-                    .all(|(number, color)| match color.as_str() {
-                        "green" => number <= &13,
-                        "red" => number <= &12,
-                        "blue" => number <= &14,
-                        _ => unreachable!(),
-                    })
+                pull.iter().all(|(number, color)| match color.as_str() {
+                    "green" => number <= &13,
+                    "red" => number <= &12,
+                    "blue" => number <= &14,
+                    _ => unreachable!(),
+                })
             }) {
                 Some(k)
             } else {

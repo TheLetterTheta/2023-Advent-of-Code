@@ -1,6 +1,5 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
-
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -8,7 +7,6 @@ use nom::{
     multi::{many0, separated_list1},
     IResult, Parser,
 };
-
 
 #[derive(Debug, Copy, Clone)]
 pub enum Chars {
@@ -316,27 +314,29 @@ pub fn solve_part2(input: &Input) -> u32 {
                                     .fold(0, |acc, n| acc * 10 + n);
                             }
 
-                            if [found_up,
+                            if [
+                                found_up,
                                 found_down,
                                 found_left,
                                 found_right,
                                 found_upleft,
                                 found_upright,
                                 found_downleft,
-                                found_downright]
+                                found_downright,
+                            ]
                             .iter()
                             .filter(|i| **i)
                             .count()
                                 == 2
                             {
-                                    up_num
-                                        * down_num
-                                        * left_num
-                                        * right_num
-                                        * upleft_num
-                                        * upright_num
-                                        * downleft_num
-                                        * downright_num
+                                up_num
+                                    * down_num
+                                    * left_num
+                                    * right_num
+                                    * upleft_num
+                                    * upright_num
+                                    * downleft_num
+                                    * downright_num
                             } else {
                                 0
                             }
