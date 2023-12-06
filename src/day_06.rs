@@ -1,14 +1,14 @@
-use aoc_runner_derive::{aoc, aoc_generator};
+use aoc_runner_derive::{aoc};
 
 use itertools::Itertools;
 use nom::{
     bytes::complete::tag,
-    character::complete::{self, alpha1, digit1, line_ending, space1},
+    character::complete::{self, digit1, line_ending, space1},
     multi::separated_list1,
-    sequence::{delimited, preceded, separated_pair, terminated, tuple},
+    sequence::{preceded, separated_pair, tuple},
     IResult,
 };
-use std::collections::{HashMap, HashSet};
+
 
 #[derive(Debug)]
 struct Race<T> {
@@ -65,7 +65,7 @@ fn parse_input_big_number(input: &str) -> IResult<&str, Race<u64>> {
 
 #[aoc(day6, part1)]
 fn solve_part1(input: &str) -> usize {
-    let (_, input) = parse_input(&input).expect("Could not parse input");
+    let (_, input) = parse_input(input).expect("Could not parse input");
 
     input
         .iter()
@@ -80,7 +80,7 @@ fn solve_part1(input: &str) -> usize {
 
 #[aoc(day6, part2)]
 fn solve_part2(input: &str) -> usize {
-    let (_, input) = parse_input_big_number(&input).expect("Could not parse input");
+    let (_, input) = parse_input_big_number(input).expect("Could not parse input");
 
     let first_time = (1..input.time)
         .find(|time| time * (input.time - time) > input.record_distance)
