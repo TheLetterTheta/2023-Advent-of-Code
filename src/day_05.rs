@@ -178,11 +178,6 @@ fn solve_part2(input: &Input) -> u32 {
                         if lookup_range.source_start <= *seed_range.start() {
                             if lookup_range.source_end() >= *seed_range.end() {
                                 // fully encompassed in this range
-                                splits.push(
-                                    lookup_range.map_within(*seed_range.start())
-                                        ..=lookup_range.map_within(*seed_range.end()),
-                                );
-
                                 lookup_ranges.push((
                                     *seed_range.start(),
                                     *seed_range.end(),
@@ -190,51 +185,33 @@ fn solve_part2(input: &Input) -> u32 {
                                         ..=lookup_range.map_within(*seed_range.end()),
                                 ));
                             } else {
-                                splits.push(
-                                    lookup_range.map_within(*seed_range.start())
-                                        ..=lookup_range.destination_end(),
-                                );
-
                                 lookup_ranges.push((
                                     *seed_range.start(),
                                     lookup_range.source_end(),
                                     lookup_range.map_within(*seed_range.start())
                                         ..=lookup_range.destination_end(),
                                 ));
-
-                                splits.push(lookup_range.source_end()..=*seed_range.end());
                             }
                         } else {
-                            splits.push(*seed_range.start()..=lookup_range.source_start - 1);
                             if lookup_range.source_end() <= *seed_range.end() {
                                 // conflict is contained within the range
-                                splits.push(
-                                    lookup_range.destination_start..=lookup_range.destination_end(),
-                                );
-
                                 lookup_ranges.push((lookup_range.source_start, lookup_range.source_end(),
                                     lookup_range.destination_start..=lookup_range.destination_end(),
                                 ));
-
-                                splits.push(lookup_range.source_end()..=*seed_range.end());
                             } else {
                                 // conflict ends after source
                                 lookup_ranges.push((lookup_range.source_start, *seed_range.end(),
                                     lookup_range.destination_start
                                         ..=lookup_range.map_within(*seed_range.end()),
                                 ));
-                                splits.push(
-                                    lookup_range.destination_start
-                                        ..=lookup_range.map_within(*seed_range.end()),
-                                );
                             }
                         }
                     });
-
+                
                 if splits.is_empty() {
                     splits.push(seed_range.clone());
                 }
-                dbg!(splits)
+                splits
             })
             .collect_vec();
     }
