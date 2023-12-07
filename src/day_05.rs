@@ -201,50 +201,48 @@ fn solve_part2(input: &Input) -> u32 {
         vals = vals
             .iter()
             .flat_map(|seed_range| {
-                let mut lookup_ranges = vec![];
-
-                map_to
+                let lookup_ranges = map_to
                     .1
                     .iter()
                     .filter(|lookup_range| {
                         seed_range.end() >= &lookup_range.source_start
                             && seed_range.start() <= &lookup_range.source_end()
                     })
-                    .for_each(|lookup_range| {
+                    .map(|lookup_range| {
                         if lookup_range.source_start <= *seed_range.start() {
                             if lookup_range.source_end() >= *seed_range.end() {
                                 // fully encompassed in this range
-                                lookup_ranges.push((
+                                (
                                     *seed_range.start(),
                                     *seed_range.end(),
                                     lookup_range.map_within(*seed_range.start())
                                         ..=lookup_range.map_within(*seed_range.end()),
-                                ));
+                                )
                             } else {
-                                lookup_ranges.push((
+                                (
                                     *seed_range.start(),
                                     lookup_range.source_end(),
                                     lookup_range.map_within(*seed_range.start())
                                         ..=lookup_range.destination_end(),
-                                ));
+                                )
                             }
                         } else if lookup_range.source_end() <= *seed_range.end() {
                             // conflict is contained within the range
-                            lookup_ranges.push((
+                            (
                                 lookup_range.source_start,
                                 lookup_range.source_end(),
                                 lookup_range.destination_start..=lookup_range.destination_end(),
-                            ));
+                            )
                         } else {
                             // conflict ends after source
-                            lookup_ranges.push((
+                            (
                                 lookup_range.source_start,
                                 *seed_range.end(),
                                 lookup_range.destination_start
                                     ..=lookup_range.map_within(*seed_range.end()),
-                            ));
+                            )
                         }
-                    });
+                    }).collect_vec();
 
                 let mut new_range = vec![seed_range.clone()];
                 for t in lookup_ranges.iter() {
@@ -254,7 +252,7 @@ fn solve_part2(input: &Input) -> u32 {
                         .collect_vec();
                 }
 
-                for t in lookup_ranges.into_iter() {
+                for t in lookup_ranges {
                     new_range.push(t.2);
                 }
 
