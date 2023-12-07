@@ -5,10 +5,10 @@ use nom::{
     bytes::complete::tag,
     character::complete::{self, alpha1, line_ending, space1},
     multi::separated_list1,
-    sequence::{delimited, preceded, separated_pair, terminated, tuple},
+    sequence::{delimited, separated_pair, terminated, tuple},
     IResult,
 };
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 #[derive(Debug)]
 struct Range {
@@ -123,7 +123,7 @@ humidity-to-location map:
 60 56 37
 56 93 4";
 
-    let (input, output) = parse_input(_input).expect("Could not parse input");
+    let (input, output) = parse_input(input).expect("Could not parse input");
     assert!(input.is_empty());
     output
 }
@@ -149,6 +149,43 @@ fn solve_part1(input: &Input) -> u32 {
     *vals.iter().min().expect("Some value to exist")
 }
 
+trait Diff {
+    fn diff(self, subtract: &Self) -> Vec<Self>
+    where
+        Self: Sized;
+}
+
+impl<T> Diff for std::ops::RangeInclusive<T>
+where
+    T: Sized
+        + std::cmp::PartialOrd
+        + std::ops::Add<u32, Output = T>
+        + std::ops::Sub<u32, Output = T>
+        + std::fmt::Debug
+        + Copy,
+{
+    fn diff(self, subtract: &Self) -> Vec<Self> {
+        if subtract.end() < self.start() || subtract.start() > self.end() {
+            // non-conflicting
+            vec![self]
+        } else if subtract.start() <= self.start() {
+            if subtract.end() >= self.end() {
+                vec![]
+            } else {
+                // starts before, and ends before
+                vec![(*subtract.end() + 1)..=*self.end()]
+            }
+        } else if subtract.end() >= self.end() {
+            vec![*self.start()..=(*subtract.start())]
+        } else {
+            vec![
+                *self.start()..=(*subtract.start()),
+                (*subtract.end() + 1)..=*self.end(),
+            ]
+        }
+    }
+}
+
 #[aoc(day5, part2)]
 fn solve_part2(input: &Input) -> u32 {
     let mut state = "seed".to_string();
@@ -164,7 +201,6 @@ fn solve_part2(input: &Input) -> u32 {
         vals = vals
             .iter()
             .flat_map(|seed_range| {
-                let mut splits = vec![];
                 let mut lookup_ranges = vec![];
 
                 map_to
@@ -192,26 +228,37 @@ fn solve_part2(input: &Input) -> u32 {
                                         ..=lookup_range.destination_end(),
                                 ));
                             }
+                        } else if lookup_range.source_end() <= *seed_range.end() {
+                            // conflict is contained within the range
+                            lookup_ranges.push((
+                                lookup_range.source_start,
+                                lookup_range.source_end(),
+                                lookup_range.destination_start..=lookup_range.destination_end(),
+                            ));
                         } else {
-                            if lookup_range.source_end() <= *seed_range.end() {
-                                // conflict is contained within the range
-                                lookup_ranges.push((lookup_range.source_start, lookup_range.source_end(),
-                                    lookup_range.destination_start..=lookup_range.destination_end(),
-                                ));
-                            } else {
-                                // conflict ends after source
-                                lookup_ranges.push((lookup_range.source_start, *seed_range.end(),
-                                    lookup_range.destination_start
-                                        ..=lookup_range.map_within(*seed_range.end()),
-                                ));
-                            }
+                            // conflict ends after source
+                            lookup_ranges.push((
+                                lookup_range.source_start,
+                                *seed_range.end(),
+                                lookup_range.destination_start
+                                    ..=lookup_range.map_within(*seed_range.end()),
+                            ));
                         }
                     });
-                
-                if splits.is_empty() {
-                    splits.push(seed_range.clone());
+
+                let mut new_range = vec![seed_range.clone()];
+                for t in lookup_ranges.iter() {
+                    new_range = new_range
+                        .iter()
+                        .flat_map(|v| v.clone().diff(&(t.0..=t.1)))
+                        .collect_vec();
                 }
-                splits
+
+                for t in lookup_ranges.into_iter() {
+                    new_range.push(t.2);
+                }
+
+                new_range
             })
             .collect_vec();
     }

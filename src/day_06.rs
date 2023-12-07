@@ -1,4 +1,4 @@
-use aoc_runner_derive::{aoc};
+use aoc_runner_derive::aoc;
 
 use itertools::Itertools;
 use nom::{
@@ -8,7 +8,6 @@ use nom::{
     sequence::{preceded, separated_pair, tuple},
     IResult,
 };
-
 
 #[derive(Debug)]
 struct Race<T> {
@@ -51,7 +50,7 @@ fn parse_input_big_number(input: &str) -> IResult<&str, Race<u64>> {
         separated_list1(space1, digit1),
     )(input)?;
 
-    let time = times.join("").parse::<u64>().expect("large number");
+    let time = times.concat().parse::<u64>().expect("large number");
     let record_distance = distances.join("").parse::<u64>().expect("large number");
 
     Ok((
@@ -72,7 +71,7 @@ fn solve_part1(input: &str) -> usize {
         .map(|race| {
             let first_time = (1..race.time)
                 .find(|time| time * (race.time - time) > race.record_distance)
-                .expect("race not possible");
+                .expect("Race not possible");
             (first_time..=(race.time - first_time)).count()
         })
         .product()
@@ -84,6 +83,6 @@ fn solve_part2(input: &str) -> usize {
 
     let first_time = (1..input.time)
         .find(|time| time * (input.time - time) > input.record_distance)
-        .expect("race not possible");
+        .expect("Race not possible");
     (first_time..=(input.time - first_time)).count()
 }
