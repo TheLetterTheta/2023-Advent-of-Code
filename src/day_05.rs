@@ -242,7 +242,8 @@ fn solve_part2(input: &Input) -> u32 {
                                     ..=lookup_range.map_within(*seed_range.end()),
                             )
                         }
-                    }).collect_vec();
+                    })
+                    .collect_vec();
 
                 let mut new_range = vec![seed_range.clone()];
                 for t in lookup_ranges.iter() {

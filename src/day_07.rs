@@ -2,11 +2,10 @@ use aoc_runner_derive::{aoc, aoc_generator};
 
 use itertools::Itertools;
 use nom::{
-    bytes::complete::{tag, take},
-    character::complete::{self, char, digit1, line_ending, one_of, space1},
-    combinator::map_res,
+    bytes::complete::tag,
+    character::complete::{self, line_ending, one_of},
     multi::separated_list1,
-    sequence::{preceded, separated_pair, tuple},
+    sequence::preceded,
     IResult, Parser,
 };
 
@@ -74,7 +73,7 @@ QQQJA 483";
 }
 
 #[aoc(day7, part1)]
-fn solve_part1(input: &Input) -> u64 {
+fn solve_part1(input: &Input) -> u32 {
     struct Helper {
         counts: Vec<usize>,
         cards: [u8; 5],
@@ -105,12 +104,12 @@ fn solve_part1(input: &Input) -> u64 {
             o => o,
         })
         .enumerate()
-        .map(|(rank, hand)| (rank as u64 + 1) * hand.bid as u64)
-        .fold(0, |acc, winnings| acc + winnings)
+        .map(|(rank, hand)| (rank as u32 + 1) * hand.bid as u32)
+        .sum::<u32>()
 }
 
 #[aoc(day7, part2)]
-fn solve_part2(input: &Input) -> u64 {
+fn solve_part2(input: &Input) -> u32 {
     #[derive(Debug)]
     struct Helper {
         counts: Vec<usize>,
@@ -140,7 +139,10 @@ fn solve_part2(input: &Input) -> u64 {
             v.counts
                 .first_mut()
                 .map(|count| *count += v.jokers as usize)
-                .or_else(|| Some(v.counts.push(v.jokers as usize)));
+                .or_else(|| {
+                    v.counts.push(v.jokers as usize);
+                    Some(())
+                });
             v
         })
         .sorted_unstable_by(|left, right| {
@@ -156,7 +158,6 @@ fn solve_part2(input: &Input) -> u64 {
             }
         })
         .enumerate()
-        .inspect(|v| println!("{:?}", v))
-        .map(|(rank, hand)| (rank as u64 + 1) * hand.bid as u64)
-        .fold(0, |acc, winnings| acc + winnings)
+        .map(|(rank, hand)| (rank as u32 + 1) * hand.bid as u32)
+        .sum::<u32>()
 }
