@@ -1,14 +1,11 @@
-use std::collections::HashMap;
+
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
 use itertools::Itertools;
 use nom::{
-    branch::alt,
-    bytes::complete::{tag, take},
-    character::complete::{self, line_ending, one_of, space1},
-    multi::{many1, separated_list1},
-    sequence::{delimited, preceded, separated_pair, terminated, tuple},
+    character::complete::{self, line_ending, space1},
+    multi::{separated_list1},
     IResult, Parser,
 };
 

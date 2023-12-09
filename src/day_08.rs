@@ -2,13 +2,13 @@ use std::collections::HashMap;
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
-use itertools::Itertools;
+
 use nom::{
     branch::alt,
     bytes::complete::{tag, take},
-    character::complete::{self, line_ending, one_of},
+    character::complete::{line_ending},
     multi::{many1, separated_list1},
-    sequence::{delimited, preceded, separated_pair, terminated, tuple},
+    sequence::{delimited, preceded, separated_pair, terminated},
     IResult, Parser,
 };
 use num::Integer;
@@ -126,10 +126,10 @@ fn solve_part2(input: &Input) -> u64 {
     input
         .nodes
         .keys()
-        .filter(|k| k.ends_with("A"))
+        .filter(|k| k.ends_with('A'))
         .map(|mut v| {
             let mut count = 0;
-            while !v.ends_with("Z") {
+            while !v.ends_with('Z') {
                 count += 1;
                 let Some(step) = instructions.next() else { panic!("Cycling - can't run out"); };
 
