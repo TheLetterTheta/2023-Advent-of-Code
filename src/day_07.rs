@@ -65,7 +65,8 @@ fn day7_generator(input: &str) -> Input {
 T55J5 684
 KK677 28
 KTJJT 220
-QQQJA 483";
+QQQJA 483
+J2T3K 11";
 
     let (input, output) = parse_input(input).expect("Could not parse input");
     assert!(input.is_empty());
@@ -85,12 +86,12 @@ fn solve_part1(input: &Input) -> u32 {
         .map(|hand| Helper {
             counts: hand
                 .cards
-                .into_iter()
+                .iter()
                 .counts()
                 .values()
-                .map(|v| v.to_owned())
                 .sorted_unstable()
                 .rev()
+                .copied()
                 .collect_vec(),
             cards: hand.cards,
             bid: hand.bid,
@@ -127,9 +128,9 @@ fn solve_part2(input: &Input) -> u32 {
                 .filter(|&v| v != 11) // filter jokers from this count
                 .counts()
                 .values()
-                .map(|v| v.to_owned())
                 .sorted_unstable()
                 .rev()
+                .copied()
                 .collect_vec(),
             jokers: hand.cards.iter().filter(|&&card| card == 11).count() as u8,
             cards: hand.cards.map(|v| if v == 11 { 1 } else { v }),
