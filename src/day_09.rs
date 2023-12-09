@@ -9,10 +9,10 @@ use nom::{
     IResult, Parser,
 };
 
-type Input = Vec<Vec<i64>>;
+type Input = Vec<Vec<i32>>;
 
 fn parse_input(input: &str) -> IResult<&str, Input> {
-    separated_list1(line_ending, separated_list1(space1, complete::i64))(input)
+    separated_list1(line_ending, separated_list1(space1, complete::i32))(input)
 }
 
 #[aoc_generator(day9)]
@@ -27,7 +27,7 @@ fn day9_generator(input: &str) -> Input {
 }
 
 #[aoc(day9, part1)]
-fn solve_part1(input: &Input) -> i64 {
+fn solve_part1(input: &Input) -> i32 {
     input
         .iter()
         .map(|n| {
@@ -47,13 +47,13 @@ fn solve_part1(input: &Input) -> i64 {
                     break;
                 }
             }
-            find_derive.iter().sum::<i64>()
+            find_derive.iter().sum::<i32>()
         })
         .sum()
 }
 
 #[aoc(day9, part2)]
-fn solve_part2(input: &Input) -> i64 {
+fn solve_part2(input: &Input) -> i32 {
     input
         .iter()
         .map(|n| {
