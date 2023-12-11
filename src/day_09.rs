@@ -1,12 +1,10 @@
-
-
 use aoc_runner_derive::{aoc, aoc_generator};
 
 use itertools::Itertools;
 use nom::{
     character::complete::{self, line_ending, space1},
-    multi::{separated_list1},
-    IResult, Parser,
+    multi::separated_list1,
+    IResult,
 };
 
 type Input = Vec<Vec<i32>>;
@@ -31,7 +29,7 @@ fn solve_part1(input: &Input) -> i32 {
     input
         .iter()
         .map(|n| {
-            let mut find_derive = vec![*n.last().expect("empty input?")];
+            let mut sum = *n.last().expect("empty input?");
             let mut curr = n.clone();
             loop {
                 curr = curr
@@ -41,13 +39,13 @@ fn solve_part1(input: &Input) -> i32 {
                     .collect_vec();
                 let last = curr.last().expect("Ran out before derivative");
 
-                find_derive.push(*last);
+                sum += *last;
 
                 if curr.iter().tuple_windows().all(|(l, r)| l == r) {
                     break;
                 }
             }
-            find_derive.iter().sum::<i32>()
+            sum
         })
         .sum()
 }
@@ -73,7 +71,7 @@ fn solve_part2(input: &Input) -> i32 {
                     break;
                 }
             }
-            find_derive.iter().rev().fold(0, |acc, v| v - acc)
+            find_derive.into_iter().rev().fold(0, |acc, v| v - acc)
         })
         .sum()
 }
