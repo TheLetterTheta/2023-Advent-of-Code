@@ -1,13 +1,9 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashSet};
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
 use itertools::Itertools;
-use nom::{
-    character::complete::{self, line_ending, space1},
-    multi::separated_list1,
-    IResult,
-};
+
 
 #[derive(Debug, Eq, Hash, Copy, Clone, PartialEq)]
 struct Coord {
@@ -188,9 +184,8 @@ fn solve_part2(input: &Input) -> i32 {
                     if visited.contains(&Coord {
                         x: x as i16,
                         y: y as i16,
-                    }) 
-                    {
-                        if wall{
+                    }) {
+                        if wall {
                             inside = !inside;
                         }
                     } else if inside {

@@ -2,11 +2,10 @@ use std::collections::HashMap;
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
-
 use nom::{
     branch::alt,
     bytes::complete::{tag, take},
-    character::complete::{line_ending},
+    character::complete::line_ending,
     multi::{many1, separated_list1},
     sequence::{delimited, preceded, separated_pair, terminated},
     IResult, Parser,
@@ -110,7 +109,9 @@ fn solve_part1(input: &Input) -> u32 {
 
     while curr != "ZZZ" {
         count += 1;
-        let Some(step) = steps.next() else { panic!("Cycling - can't run out of steps!") };
+        let Some(step) = steps.next() else {
+            panic!("Cycling - can't run out of steps!")
+        };
         let (left, right) = input.nodes.get(&curr).expect("Direction doesn't exist");
         match step {
             Turn::Left => curr = left.to_string(),
@@ -131,7 +132,9 @@ fn solve_part2(input: &Input) -> u64 {
             let mut count = 0;
             while !v.ends_with('Z') {
                 count += 1;
-                let Some(step) = instructions.next() else { panic!("Cycling - can't run out"); };
+                let Some(step) = instructions.next() else {
+                    panic!("Cycling - can't run out");
+                };
 
                 let (left, right) = input.nodes.get(v).expect("Direction doesn't exist");
 
